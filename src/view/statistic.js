@@ -1,5 +1,5 @@
 export const getStatsTemplate = () => (
-`	<section class="statistic">
+  `<section class="statistic">
 		<p class="statistic__rank">
 			Your rank
 			<img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">

@@ -1,5 +1,5 @@
 export const getFilmCardTemplate = () => (
-	`<article class="film-card">
+  `<article class="film-card">
 		<h3 class="film-card__title">The Great Flamarion</h3>
 		<p class="film-card__rating">8.9</p>
 		<p class="film-card__info">
