@@ -14,7 +14,7 @@ const siteMainElement = document.querySelector('.main');
 siteMainElement.innerHTML = '';
 
 const render = (container, template, place) => {
-	container.insertAdjacentHTML(place, template);
+  container.insertAdjacentHTML(place, template);
 };
 
 
@@ -25,7 +25,7 @@ render(siteMainElement, getFilmSectionTemplate(), 'beforeend');
 
 const filmList = siteMainElement.querySelector('.films-list__container');
 for (let i = 0; i < FILM_CARD_VALUE; i++) {
-	render(filmList, getFilmCardTemplate(), 'beforeend');
+  render(filmList, getFilmCardTemplate(), 'beforeend');
 }
 
 const sectionFilms = siteMainElement.querySelector('.films');
