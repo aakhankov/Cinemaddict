@@ -7,7 +7,7 @@
     "eslint": "eslint src/",
     "test": "npm run eslint",
     "build": "webpack --mode development",
-	"start": "webpack-dev-server --open"
+    "start": "webpack-dev-server --open"
   },
   "devDependencies": {
     "eslint": "7.31.0",
@@ -18,5 +18,8 @@
   },
   "engines": {
     "node": "12"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.6"
   }
 }
