@@ -3,28 +3,28 @@ const YEAR_FORMAT = 'YYYY';
 const ACTIVE_CLASS = 'film-card__controls-item--active';
 
 const getFilmCardTemplate = (filmData) => {
-  if (filmData) {
-    const {
-      title = '',
-      description = '',
-      totalRating = 0,
-      poster = '',
-      genre = [],
-      runtime = '',
-      release = '',
-    } = filmData.filmInfo || {};
+	if (filmData) {
+		const {
+			title = '',
+			description = '',
+			totalRating = 0,
+			poster = '',
+			genre = [],
+			runtime = '',
+			release = '',
+		} = filmData.filmInfo || {};
 
-    const year = changeDateFormat(release?.date, YEAR_FORMAT);
-    const comments = filmData.comments || [];
+		const year = changeDateFormat(release?.date, YEAR_FORMAT);
+		const comments = filmData.comments || [];
 
-    const {
-      watchlist = false,
-      watched = false,
-      favorite = false
-    } = filmData.userDetails || {};
+		const {
+			watchlist = false,
+			watched = false,
+			favorite = false
+		} = filmData.userDetails || {};
 
-    return (
-      `<article class="film-card">
+		return (
+			`<article class="film-card">
       <a class="film-card__link">
         <h3 class="film-card__title">${title}</h3>
         <p class="film-card__rating">${totalRating}</p>
@@ -43,10 +43,10 @@ const getFilmCardTemplate = (filmData) => {
         <button class="film-card__controls-item film-card__controls-item--favorite ${favorite ? ACTIVE_CLASS : ''}" type="button">Mark as favorite</button>
       </div>
     </article>`
-    );
-  }
+		);
+	}
 
-  return '';
+	return '';
 };
 
 export { getFilmCardTemplate };

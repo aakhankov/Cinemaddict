@@ -3,6 +3,6 @@ const getUserProfileTemplate = (userRank) => (
 	  <p class="profile__rating">${userRank || ''}</p>
 	  <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
 	</section>`
-  );
-  
-  export { getUserProfileTemplate };
+);
+
+export { getUserProfileTemplate };

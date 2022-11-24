@@ -4,6 +4,6 @@ const getFilmSortMenuTemplate = () => (
 	  <li><a href="#" class="sort__button">Sort by date</a></li>
 	  <li><a href="#" class="sort__button">Sort by rating</a></li>
 	</ul>`
-  );
-  
-  export { getFilmSortMenuTemplate };
+);
+
+export { getFilmSortMenuTemplate };

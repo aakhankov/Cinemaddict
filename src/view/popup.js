@@ -4,60 +4,60 @@ import { getPopupNewCommentTemplate } from './popup-new-comment';
 const ACTIVE_CLASS = 'film-details__control-button--active';
 
 const TableTerms = {
-  DIRECTOR: 'Director',
-  WRITERS: 'Writers',
-  ACTORS: 'Actors',
-  DATE: 'Release Date',
-  TIME: 'Runtime',
-  COUNTRY: 'Country',
-  GENRES: 'Genres'
+	DIRECTOR: 'Director',
+	WRITERS: 'Writers',
+	ACTORS: 'Actors',
+	DATE: 'Release Date',
+	TIME: 'Runtime',
+	COUNTRY: 'Country',
+	GENRES: 'Genres'
 };
 
 
 const getTableRow = (term, ceilData) => (
-  `<tr class="film-details__row">
+	`<tr class="film-details__row">
   <td class="film-details__term">${term || ''}</td>
   <td class="film-details__cell">${ceilData || ''}</td>
 </tr>`
 );
 
 const getCardGenres = (genres) => {
-  const genreTemplates = [];
-  if (Array.isArray(genres)) {
-    genres.forEach((genre) => {
-      genreTemplates.push(`<span class="film-details__genre">${genre}</span>`);
-    });
-  }
+	const genreTemplates = [];
+	if (Array.isArray(genres)) {
+		genres.forEach((genre) => {
+			genreTemplates.push(`<span class="film-details__genre">${genre}</span>`);
+		});
+	}
 
-  return genreTemplates.join(' ');
+	return genreTemplates.join(' ');
 };
 
 //Шаблон всего popup'a
 const getPopupTemplate = (filmData) => {
-  if (filmData) {
-    const {
-      title = '',
-      alternativeTitle = '',
-      description = '',
-      totalRating = 0,
-      poster = '',
-      genre = [],
-      runtime = '',
-      release = {},
-      pegi = '',
-      director = '',
-      writers = [],
-      actors = [],
-    } = filmData.filmInfo || {};
+	if (filmData) {
+		const {
+			title = '',
+			alternativeTitle = '',
+			description = '',
+			totalRating = 0,
+			poster = '',
+			genre = [],
+			runtime = '',
+			release = {},
+			pegi = '',
+			director = '',
+			writers = [],
+			actors = [],
+		} = filmData.filmInfo || {};
 
-    const {
-      watchlist = false,
-      watched = false,
-      favorite = false
-    } = filmData.userDetails || {};
+		const {
+			watchlist = false,
+			watched = false,
+			favorite = false
+		} = filmData.userDetails || {};
 
-    return (
-      `<section class="film-details">
+		return (
+			`<section class="film-details">
         <form class="film-details__inner" action="" method="get">
           <div class="film-details__top-container">
             <div class="film-details__close">
@@ -107,10 +107,10 @@ const getPopupTemplate = (filmData) => {
           </div>
         </form>
       </section>`
-    );
-  }
+		);
+	}
 
-  return '';
+	return '';
 };
 
 export { getPopupTemplate };

@@ -5,6 +5,6 @@ const getFilmListSectionTemplate = (titleText = '', isExtraSection = false) => (
 		  <!-- Карточки фильмов -->
 		</div>
 	</section>`
-  );
-  
-  export { getFilmListSectionTemplate };
+);
+
+export { getFilmListSectionTemplate };
