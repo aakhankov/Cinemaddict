@@ -1,5 +1,5 @@
-const getPopupNewCommentTemplate = () => (
-	`<div class="film-details__new-comment">
+const getPopupNewCommentTemplate = () =>
+  `<div class="film-details__new-comment">
 	  <div class="film-details__add-emoji-label"></div>
 	  <label class="film-details__comment-label">
 		<textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -22,7 +22,6 @@ const getPopupNewCommentTemplate = () => (
 		  <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
 		</label>
 	  </div>
-	</div>`
-);
+	</div>`;
 
 export { getPopupNewCommentTemplate };

@@ -1,7 +1,6 @@
-const getFilmSectionTemplate = () => (
-	`<section class="films">
+const getFilmSectionTemplate = () =>
+  `<section class="films">
 	  <!-- Секция со списком фильмов -->
-	</section>`
-);
+	</section>`;
 
 export { getFilmSectionTemplate };
