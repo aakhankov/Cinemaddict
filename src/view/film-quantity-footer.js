@@ -3,7 +3,7 @@ const getFilmFooterTemplate = (filmFilter) => {
     return `<p>${filmFilter.total} movies inside</p>`;
   }
 
-  return "";
+  return '';
 };
 
 export { getFilmFooterTemplate };

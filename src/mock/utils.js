@@ -1,17 +1,17 @@
-import dayjs from "dayjs";
-const DATE_FORMAT = "YYYY/MM/DD HH:mm";
+import dayjs from 'dayjs';
+const DATE_FORMAT = 'YYYY/MM/DD HH:mm';
 const DESCRIPTION_MAX_LENGTH = 140;
-const BASE_DATE = "1990-01-01";
+const BASE_DATE = '1990-01-01';
 const DateFormat = {
-  DAY: "day",
-  WEEK: "week",
-  QUARTER: "quarter",
-  MONTH: "month",
-  YEAR: "year",
-  HOUR: "hour",
-  MINUTE: "minute",
-  SECOND: "second",
-  MSECOND: "millisecond",
+  DAY: 'day',
+  WEEK: 'week',
+  QUARTER: 'quarter',
+  MONTH: 'month',
+  YEAR: 'year',
+  HOUR: 'hour',
+  MINUTE: 'minute',
+  SECOND: 'second',
+  MSECOND: 'millisecond',
 };
 
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
@@ -54,7 +54,7 @@ const getNonRepeatUintArray = (lowerBorder, upperBorder, arrayLength) => {
     return arrayRandomNumbers;
   }
 
-  throw new Error("generateNonRepeatArray: wrong attributes");
+  throw new Error('generateNonRepeatArray: wrong attributes');
 };
 
 // Функция getRandomPartFromArray возвращает копию принятого массива случайной длинны от 1 до inputArray.length
@@ -63,7 +63,7 @@ const getRandomPartFromArray = (inputArray) => {
     return inputArray.slice(0, getRandomInteger(1, inputArray.length));
   }
 
-  return new Error("getRandomPartFromArray: inputArray is not an array");
+  return new Error('getRandomPartFromArray: inputArray is not an array');
 };
 
 const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
@@ -91,7 +91,7 @@ const getShortFilmDescription = (filmDescription) => {
 };
 
 const changeDateFormat = (date, format = DATE_FORMAT) =>
-  date ? dayjs(date).format(format) : "";
+  date ? dayjs(date).format(format) : '';
 
 const getTopRatedFilmsData = (films) => {
   if (Array.isArray(films)) {

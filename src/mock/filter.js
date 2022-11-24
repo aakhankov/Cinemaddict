@@ -8,7 +8,7 @@ const filmStatistic = {
 const userRank = {
   novice: [1, 10],
   fan: [11, 20],
-  "movie buff": [21, Infinity],
+  'movie buff': [21, Infinity],
 };
 
 const getUserRank = () => {
