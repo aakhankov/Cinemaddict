@@ -1,9 +1,9 @@
 const getFilmFooterTemplate = (filmFilter) => {
-	if (filmFilter?.total) {
-		return `<p>${filmFilter.total} movies inside</p>`;
-	}
+  if (filmFilter?.total) {
+    return `<p>${filmFilter.total} movies inside</p>`;
+  }
 
-	return '';
+  return '';
 };
 
 export { getFilmFooterTemplate };
