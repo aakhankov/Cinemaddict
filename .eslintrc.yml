@@ -7,3 +7,5 @@ env:
   browser: true
 
 extends: 'htmlacademy/vanilla'
+
+rules: 'indent': 'off'

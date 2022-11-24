@@ -20,7 +20,7 @@ const HOUR_VALUE = 60;
 
 const filmUrl = new Map();
 filmUrl.set('Made for Each Other', 'made-for-each-other.png')
-	.set('Popeye the Sailor Meets Sindbad the Sailor', 'popeye-meets-sinbad.png')
+  .set('Popeye the Sailor Meets Sindbad the Sailor', 'popeye-meets-sinbad.png')
 	.set('Sagebrush Trai', 'sagebrush-trail.jpg')
 	.set('The Dance of Life', 'the-dance-of-life.jpg')
 	.set('The Man with the Golden Arm', 'the-man-with-the-golden-arm.jpg')
