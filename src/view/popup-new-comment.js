@@ -23,6 +23,6 @@ const getPopupNewCommentTemplate = () => (
 		</label>
 	  </div>
 	</div>`
-  );
-  
-  export { getPopupNewCommentTemplate };
+);
+
+export { getPopupNewCommentTemplate };

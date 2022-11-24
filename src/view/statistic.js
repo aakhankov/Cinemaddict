@@ -33,6 +33,6 @@ const getStatsTemplate = () => (
 		</li>
 	  </ul>
 	</section>`
-  );
-  
-  export { getStatsTemplate };
+);
+
+export { getStatsTemplate };
