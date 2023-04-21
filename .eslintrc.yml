@@ -7,5 +7,3 @@ env:
   browser: true
 
 extends: "htmlacademy/vanilla"
-
-rules:  "prettier/prettier": ["error", { "singleQuote": true }]
