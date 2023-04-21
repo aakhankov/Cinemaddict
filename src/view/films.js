@@ -1,6 +1,5 @@
 export const filmsSectionTemplate = () => (
-    `<section class="films">
-    </section>`
+  `<section class="films">
+  </section>`
 );
-  
-  
+
