@@ -1,3 +1,4 @@
+import { createElement } from '../mock/utilts.js';
 
 export const menuTemplate = (movies) => {
   let watchlist = 0;
@@ -8,7 +9,6 @@ export const menuTemplate = (movies) => {
     history = film.userDetails.alreadyWatched ? history += 1 : history;
     favorites = film.userDetails.favorite ? favorites += 1 : favorites;
   });
-
   return `<nav class="main-navigation">
   <div class="main-navigation__items">
     <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
@@ -18,10 +18,32 @@ export const menuTemplate = (movies) => {
   </div>
   <a href="#stats" class="main-navigation__additional">Stats</a>
 </nav>
-
 <ul class="sort">
   <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
   <li><a href="#" class="sort__button">Sort by date</a></li>
   <li><a href="#" class="sort__button">Sort by rating</a></li>
 </ul>`;
 };
+
+export default class Menu {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return menuTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
