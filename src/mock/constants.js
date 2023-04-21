@@ -7,7 +7,6 @@ export const POSTERS = [
   'images/posters/popeye-meets-sinbad.png',
   'images/posters/made-for-each-other.png',
 ];
-
 export const MOVIE_TITLES = [
   'The Dance Of Life',
   'Sagebrush Trail',
@@ -17,12 +16,10 @@ export const MOVIE_TITLES = [
   'Popeye the Sailor Meets Sindbad the Sailor',
   'Made For Each Other',
 ];
-
 export const MOVIE_RATIMG = {
   MIN: 2,
   MAX: 10,
 };
-
 export const YEAR_OF_ISSUE = [
   '1929',
   '1933',
@@ -32,7 +29,6 @@ export const YEAR_OF_ISSUE = [
   '1955',
   '1964',
 ];
-
 export const MOVIE_DURATION = [
   '16m',
   '54m',
@@ -42,8 +38,6 @@ export const MOVIE_DURATION = [
   '1h 55m',
   '1h 59m',
 ];
-
-
 export const MOVIE_GENRES = [
   'Comedy',
   'Drama',
@@ -52,7 +46,6 @@ export const MOVIE_GENRES = [
   'Thriller',
   'Musical',
 ];
-
 export const LOREM_IPSUM_DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -66,17 +59,12 @@ export const LOREM_IPSUM_DESCRIPTIONS = [
   'In rutrum ac purus sit amet tempus.',
 ];
 
-
-// export const ORIGINAL_MOVIE_TITLES = [
-// ];
-
 export const DIRECTORS = [
   'Anthony Mann',
   'Victor Fleming',
   'Blake Edwards',
   'Guy Ritchie',
 ];
-
 export const WRITERS = [
   'Anne Wigton',
   'Heinz Herald',
@@ -84,7 +72,6 @@ export const WRITERS = [
   'Truman Capote',
   'Matthew de Vere Drummond',
 ];
-
 export const ACTORS = [
   'Erich von Stroheim',
   'Mary Beth Hughes',
@@ -94,7 +81,6 @@ export const ACTORS = [
   'Audrey Hepburn',
   'Morgan Porterfield Freeman Jr.',
 ];
-
 export const FILM_PRODUCTION_COUNTRY = [
   'USA',
   'Canada',
@@ -106,4 +92,9 @@ export const FILM_PRODUCTION_COUNTRY = [
 
 export const MAX_LENGTH_DESCRIPTION = 140;
 
-export const COMMENT_EMOJI = ['smile', 'sleeping', 'vomit', 'angry'];
+export const EMOJI = [
+  'images/emoji/angry.png',
+  'images/emoji/puke.png',
+  'images/emoji/sleeping.png',
+  'images/emoji/smile.png',
+];
