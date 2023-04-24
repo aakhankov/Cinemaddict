@@ -23,7 +23,7 @@ export const UpdateType = {
 };
 
 export const Pages = {
-  ALL: 'all',
+  ALL: 'allTime',
   WATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITES: 'favorites',
@@ -54,4 +54,10 @@ export const CurrentType = {
   WEEK: 'week',
   MONTH: 'month',
   YEAR: 'year',
+};
+
+export const UserLevel = {
+  NOVICE: 'Novice',
+  FAN: 'Fan',
+  MOVIE_BUFF: 'Movie buff',
 };
