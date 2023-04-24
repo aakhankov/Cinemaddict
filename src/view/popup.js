@@ -1,10 +1,16 @@
-import { formatReleaseDate, formatRuntime } from '../mock/utilts.js';
-import Abstract from '../mock/abstract.js';
+import { formatReleaseDate, formatRuntime } from '../utils/utilts.js';
+import Abstract from './abstract.js';
 
 export const popupTemplate = (movie) => {
-  const watchlistName = movie.userDetails.watchlist ? 'film-details__control-button--active' : '';
-  const watchedName = movie.userDetails.alreadyWatched ? 'film-details__control-button--active' : '';
-  const favoritesName = movie.userDetails.favorite ? 'film-details__control-button--active' : '';
+  const watchlistName = movie.userDetails.watchlist
+    ? 'film-details__control-button--active'
+    : '';
+  const watchedName = movie.userDetails.alreadyWatched
+    ? 'film-details__control-button--active'
+    : '';
+  const favoritesName = movie.userDetails.favorite
+    ? 'film-details__control-button--active'
+    : '';
   const isGenres = movie.movieInfo.genre.length === 1 ? 'Genre' : 'Genres';
   return `<section class="film-details">
 <form class="film-details__inner" action="" method="get">
@@ -14,14 +20,18 @@ export const popupTemplate = (movie) => {
     </div>
     <div class="film-details__info-wrap">
       <div class="film-details__poster">
-        <img class="film-details__poster-img" src=${movie.movieInfo.poster} alt="">
+        <img class="film-details__poster-img" src=${
+  movie.movieInfo.poster
+} alt="">
         <p class="film-details__age">${movie.movieInfo.ageRating}+</p>
       </div>
       <div class="film-details__info">
         <div class="film-details__info-head">
           <div class="film-details__title-wrap">
             <h3 class="film-details__title">${movie.movieInfo.title}</h3>
-            <p class="film-details__title-original">Original: ${movie.movieInfo.alternativeTitle}</p>
+            <p class="film-details__title-original">Original: ${
+  movie.movieInfo.alternativeTitle
+}</p>
           </div>
           <div class="film-details__rating">
             <p class="film-details__total-rating">${movie.movieInfo.rating}</p>
@@ -42,22 +52,30 @@ export const popupTemplate = (movie) => {
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Release Date</td>
-            <td class="film-details__cell">${formatReleaseDate(movie.movieInfo.release.date)}</td>
+            <td class="film-details__cell">${formatReleaseDate(
+    movie.movieInfo.release.date,
+  )}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Runtime</td>
-            <td class="film-details__cell">${formatRuntime(movie.movieInfo.runTime)}</td>
+            <td class="film-details__cell">${formatRuntime(
+    movie.movieInfo.runTime,
+  )}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Country</td>
-            <td class="film-details__cell">${movie.movieInfo.release.releaseCountry}</td>
+            <td class="film-details__cell">${
+  movie.movieInfo.release.releaseCountry
+}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">${isGenres}</td>
             </td>
           </tr>
         </table>
-        <p class="film-details__film-description">${movie.movieInfo.description}</p>
+        <p class="film-details__film-description">${
+  movie.movieInfo.description
+}</p>
       </div>
     </div>
     <section class="film-details__controls">
@@ -68,10 +86,13 @@ export const popupTemplate = (movie) => {
   </div>
   <div class="film-details__bottom-container">
     <section class="film-details__comments-wrap">
-      <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${movie.comments.length}</span></h3>
+      <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${
+  movie.comments.length
+}</span></h3>
     <ul class="film-details__comments-list" style="font-size:0" >
-      ${movie.comments.map((comment) =>
-    ` <li class="film-details__comment">
+      ${movie.comments.map(
+    (comment) =>
+      ` <li class="film-details__comment">
         <span class="film-details__comment-emoji">
           <img src=${comment.emoji} width="55" height="55" alt="emoji-smile">
         </span>
@@ -83,7 +104,8 @@ export const popupTemplate = (movie) => {
             <button class="film-details__comment-delete">Delete</button>
           </p>
         </div>
-      </li>`)}
+      </li>`,
+  )}
     </ul>
     <div class="film-details__new-comment">
       <div class="film-details__new-comment">
@@ -127,6 +149,8 @@ export default class Popup extends Abstract {
 
   setClickHandler(callback) {
     this._callback.click = callback;
-    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
+    this.getElement()
+      .querySelector('.film-details__close-btn')
+      .addEventListener('click', this._clickHandler);
   }
 }
