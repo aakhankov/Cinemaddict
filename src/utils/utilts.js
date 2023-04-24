@@ -1,5 +1,9 @@
 import dayjs from 'dayjs';
 import Abstract from '../view/abstract.js';
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
+import isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween);
 
 export const getRandomInt = (firstNumber = 0, secondNumber = 1) => {
   const larger = Math.ceil(Math.min(firstNumber, secondNumber));
@@ -18,35 +22,40 @@ export const getRandomDescription = (items) => {
   const randomDescription = items.slice(0, randomIndex + 1);
   return randomDescription;
 };
-export const formatReleaseDate = (releaseDate) => dayjs(releaseDate).format('DD MM YYYY');
-export const formatRuntime = (runtime) => `${Math.floor(runtime / 60)}h ${runtime % 60}m`;
 
 export const generateDate = () => {
-  const maxDaysGap = 7;
-  const yearsGap = getRandomInt(-50, 0);
-  const daysGap = getRandomInt(-maxDaysGap, maxDaysGap);
+  const yearsGap = getRandomInt(-126, 0);
+  const daysGap = getRandomInt(-16, 15);
   const hoursGap = getRandomInt(-12, 12);
   return dayjs().add(daysGap, 'day').add(yearsGap, 'year').add(hoursGap, 'hour').toDate();
 };
+
+export const getDayMonthFormat = (dueDate) => dayjs(dueDate).format('D MMMM');
+export const getYearsFormat = (dueDate) => dayjs(dueDate).format('YYYY');
+
+export const formatRuntime = (dueDate) => dayjs(dueDate).format('HH:MM');
+
+export const generateRuntime = (runtime) => {
+  const hour = dayjs.duration(runtime, 'm').format('H');
+  const minute = dayjs.duration(runtime, 'm').format('mm');
+  if (runtime < 60) {
+    return `${minute}m`;
+  }
+  return `${hour}h ${minute}m`;
+};
+
 
 export const createElement = (template) => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
   return newElement.firstChild;
 };
-
 export const isEscEvent = (evt) => evt.key === 'Esc' || evt.key === 'Escape';
-
-
 export const renderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
 };
-
 export const render = (container, element, place = renderPosition.BEFOREEND) => {
-
-  //  todo https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Operators/instanceof
-
   if (container instanceof Abstract) {
     container = container.getElement();
   }
@@ -62,7 +71,6 @@ export const render = (container, element, place = renderPosition.BEFOREEND) => 
       break;
   }
 };
-
 export const remove = (component) => {
   if (!(component instanceof Abstract)) {
     throw new Error('Can remove only components');
@@ -71,28 +79,21 @@ export const remove = (component) => {
   el.remove();
   component.removeElement();
 };
-
 export const replace = (newChild, oldChild) => {
   if (oldChild instanceof Abstract) {
     oldChild = oldChild.getElement();
   }
-
   if (newChild instanceof Abstract) {
     newChild = newChild.getElement();
   }
-
   const parent = oldChild.parentElement;
-
   if (parent === null || oldChild === null || newChild === null) {
     throw new Error('Can\'t replace unexisting elements');
   }
-
   parent.replaceChild(newChild, oldChild);
 };
-
 export const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
-
   if (index === -1) {
     return items;
   }
@@ -102,7 +103,6 @@ export const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
-
 export const topSortFunction = (films) => [...films].sort((a, b) => b.movieInfo.rating - a.movieInfo.rating);
 export const commentedSortFunction = (films) => [...films].sort((a, b) => b.comments.length - a.comments.length);
 export const sortDate = (movieFirst, movieSecond) => dayjs(movieSecond.movieInfo.release.date).diff(dayjs(movieFirst.movieInfo.release.date));

@@ -1,5 +1,6 @@
-import { formatReleaseDate, formatRuntime } from '../utils/utilts.js';
+import { formatRuntime, generateRuntime, getDayMonthFormat, getYearsFormat } from '../utils/utilts.js';
 import SmartView from './smart.js';
+import dayjs from 'dayjs';
 
 const createCommentTemplate = (comment) => (
   ` <li class="film-details__comment">
@@ -16,18 +17,14 @@ const createCommentTemplate = (comment) => (
           </div>
         </li>`
 );
-
 const createCommentsTemplate = (comments) => (
   `<ul class="film-details__comments-list" style="font-size:0" >
   ${comments.map((comment) => createCommentTemplate(comment))}
   </ul>`
 );
-
 const createEmojiTemplate = (generateComment) => (
   ` <img src=${generateComment.emoji} width="55" height="55" alt="emoji-smile">`
 );
-
-
 const createNewCommentTemplate = (generateComment) => (
   ` <div class="film-details__new-comment">
   <div class="film-details__add-emoji-label">${generateComment.emoji ? createEmojiTemplate(generateComment) : ''}</div>
@@ -53,16 +50,12 @@ const createNewCommentTemplate = (generateComment) => (
     </label>
   </div>`
 );
-
-
 const createPopupTemplate = (data, newComment) => {
   const { comments, movieInfo, userDetails } = data;
-
   const watchlistName = userDetails.watchlist ? 'film-details__control-button--active' : '';
   const watchedName = userDetails.alreadyWatched ? 'film-details__control-button--active' : '';
   const favoritesName = userDetails.favorite ? 'film-details__control-button--active' : '';
   const isGenres = movieInfo.genre.length === 1 ? 'Genre' : 'Genres';
-
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
@@ -99,11 +92,11 @@ const createPopupTemplate = (data, newComment) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${formatReleaseDate}</td>
+              <td class="film-details__cell">${getDayMonthFormat(movieInfo.release.date)} ${getYearsFormat((movieInfo.release.date))}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${formatRuntime}</td>
+              <td class="film-details__cell">${generateRuntime(movieInfo.runtime)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
@@ -136,8 +129,10 @@ const createPopupTemplate = (data, newComment) => {
 };
 
 export default class Popup extends SmartView {
-  constructor(film, changeData) {
+  constructor(film, changeData, comments) {
     super();
+    this._comments = comments;
+    this._newComment = {};
     this._data = Popup.parseFilmToData(film);
     this._changeData = changeData;
     this._clickHandler = this._clickHandler.bind(this);
@@ -147,12 +142,11 @@ export default class Popup extends SmartView {
     this._textInputHandler = this._textInputHandler.bind(this);
     this._emojiHandler = this._emojiHandler.bind(this);
     this._sendCommentHandler = this._sendCommentHandler.bind(this);
-
     this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPopupTemplate(this._data, this._newComment);
+    return createPopupTemplate(this._data, this._newComment, this._comments);
   }
 
   _clickHandler(evt) {
@@ -195,7 +189,6 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
   }
 
-
   static parseFilmToData(film) {
     return Object.assign(
       {},
@@ -207,10 +200,8 @@ export default class Popup extends SmartView {
     );
   }
 
-
   static parseDataToFilm(data) {
     data = Object.assign({}, data);
-
     if (!data.isComments) {
       data.comments = [];
     }
@@ -218,7 +209,6 @@ export default class Popup extends SmartView {
       delete data.scrollPosition;
     }
     delete data.isComments;
-
     return data;
   }
 
@@ -230,7 +220,6 @@ export default class Popup extends SmartView {
 
   _textInputHandler(evt) {
     evt.preventDefault();
-
     this._data = Object.assign(
       {},
       this._data,
@@ -239,22 +228,19 @@ export default class Popup extends SmartView {
         scrollPosition: this.getElement().scrollTop,
       },
     );
-
     this.updateNewComment(
       Object.assign(
         {},
         this._newComment,
         {
-          text: evt.target.value,
+          comment: evt.target.value,
         },
       ), true);
     this.getElement().scrollTop = this._data.scrollPosition;
   }
 
-
   _emojiHandler(evt) {
     evt.preventDefault();
-
     this._data = Object.assign(
       {},
       this._data,
@@ -263,7 +249,6 @@ export default class Popup extends SmartView {
         scrollPosition: this.getElement().scrollTop,
       },
     );
-
     this.updateNewComment(
       Object.assign(
         {},
@@ -275,11 +260,11 @@ export default class Popup extends SmartView {
   }
 
   _sendCommentHandler(evt) {
-    if (evt.ctrlKey && evt.key === 'Enter') {
+    if (evt.key === 'Enter') {
       evt.preventDefault();
 
-      if (this._newComment.emoji || this._newComment.text) {
-        this._addingNewCooment();
+      if (this._newComment.emoji && this._newComment.comment) {
+        this._addingNewComment();
         this.updateData(
           Object.assign(
             {},
@@ -294,19 +279,20 @@ export default class Popup extends SmartView {
     }
   }
 
-  _addingNewCooment() {
+  _addingNewComment() {
+    const dueDate = dayjs();
+    const el = `${getDayMonthFormat(dueDate)} ${formatRuntime(dueDate)}`;
     this._newComment = Object.assign(
       {},
       this._newComment,
       {
-        id: 1,
-        author: 'Name',
-        dueDate: `${formatReleaseDate} ${formatRuntime}`,
+        id: 3,
+        author: 'Iron Maaaan',
+        date: el,
       });
 
     const comments = this._data.comments;
     const newcomment = this._newComment;
-
     comments[comments.length] = newcomment;
     this._data = Object.assign(
       {},
