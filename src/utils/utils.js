@@ -1,13 +1,10 @@
 import dayjs from 'dayjs';
 import Abstract from '../view/abstract.js';
 import { Pages } from '../constants.js';
-
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 import isBetween from 'dayjs/plugin/isBetween';
 dayjs.extend(isBetween);
-
-
 export const getRandomInt = (firstNumber = 0, secondNumber = 1) => {
   const larger = Math.ceil(Math.min(firstNumber, secondNumber));
   const lesser = Math.floor(Math.max(firstNumber, secondNumber));
@@ -31,9 +28,11 @@ export const generateDate = () => {
   const hoursGap = getRandomInt(-12, 12);
   return dayjs().add(daysGap, 'day').add(yearsGap, 'year').add(hoursGap, 'hour').toDate();
 };
+
 export const getDayMonthFormat = (dueDate) => dayjs(dueDate).format('D MMMM');
 export const getYearsFormat = (dueDate) => dayjs(dueDate).format('YYYY');
-export const formatRuntime = (dueDate) => dayjs(dueDate).format('HH:MM');
+export const getTimeFormat = (dueDate) => dayjs(dueDate).format('HH:MM');
+
 export const generateRuntime = (runtime) => {
   const hour = dayjs.duration(runtime, 'm').format('H');
   const minute = dayjs.duration(runtime, 'm').format('mm');
@@ -83,10 +82,13 @@ export const replace = (newChild, oldChild) => {
   if (newChild instanceof Abstract) {
     newChild = newChild.getElement();
   }
+
   const parent = oldChild.parentElement;
-  if (parent === null || oldChild === null || newChild === null) {
+
+  if (parent === null || newChild === null) {
     throw new Error('Can\'t replace unexisting elements');
   }
+
   parent.replaceChild(newChild, oldChild);
 };
 export const updateItem = (items, update) => {
@@ -110,14 +112,10 @@ export const filter = {
   [Pages.HISTORY]: (films) => films.filter((film) => film.userDetails.alreadyWatched),
   [Pages.FAVORITES]: (films) => films.filter((film) => film.userDetails.favorite),
 };
-
 export const getGenres = (films) => {
   const genresArray = films.map((film) => film.movieInfo.genre).flat();
   return [...new Set(genresArray)];
-
 };
-
-
 export const getNumberFilmsGenre = (films) => {
   const genres = getGenres(films);
   const result = {};
@@ -131,12 +129,10 @@ export const getNumberFilmsGenre = (films) => {
   });
   return result;
 };
-
 export const getSortGenresFilms = (obj) => {
   const newObj = {};
   Object.keys(obj).sort((a, b) => obj[b] - obj[a]).forEach((i) => newObj[i] = obj[i]);
   return newObj;
 };
-
 export const completedFimsInDateRange = (films, dateFrom, dateTo, format) => films.filter((film) =>
   dayjs(film.userDetails.watchingDate).isBetween(dateFrom, dateTo, format, '[]'));
