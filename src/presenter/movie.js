@@ -26,8 +26,8 @@ export default class Movie {
     this._handleHistoryClick = this._handleHistoryClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
 
-    this._handleFethcedComments = this._handleFethcedComments.bind(this);
-    this._commentsModel.subscribe(this._handleFethcedComments);
+    this._handleFetchedComments = this._handleFetchedComments.bind(this);
+    this._commentsModel.subscribe(this._handleFetchedComments);
   }
 
   init(film, scrollPosition) {
@@ -37,7 +37,7 @@ export default class Movie {
     const prevPopupComponent = this._popupComponent;
 
     this._filmComponent = new Card(this._film);
-    this._popupComponent = new Popup(this._film, this._changeData, this._commentsModel, this._scrollPosition, this._saveScroll);
+    this._popupComponent = new Popup(this._film, this._changeData, this._commentsModel, this._api);
     this._filmComponent.setClickHandler(this._clickHandler);
     this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmComponent.setAlreadyWatchedClickHandler(this._handleHistoryClick);
@@ -46,24 +46,26 @@ export default class Movie {
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._popupComponent.setAlreadyWatchedClickHandler(this._handleHistoryClick);
     this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+
     if (prevFilmComponent === null || prevPopupComponent === null) {
       render(this._container, this._filmComponent, renderPosition.BEFOREEND);
       return;
     }
+
     if (this._container.contains((prevFilmComponent.getElement())) && this._mode === Mode.DEFAULT) {
       replace(this._filmComponent, prevFilmComponent);
     }
+
     if (this._bodyElement.contains((prevPopupComponent.getElement())) && this._mode === Mode.POPUP) {
       replace(this._popupComponent, prevPopupComponent);
       replace(this._filmComponent, prevFilmComponent);
-      this._getCommentsFilm(this._film);
 
-      this._bodyElement.classList.add('hide-overflow');
-      this._bodyElement.scroll(0, this._scrollPosition);
+      this._getCommentsFilm(this._film);
+      this._popupComponent.getElement().scrollTo(0, this._scrollPosition);
     }
   }
 
-  _handleFethcedComments(updateType, film) {
+  _handleFetchedComments(updateType, film) {
     if (film.id !== this._film.id) {
       return;
     }
@@ -74,11 +76,29 @@ export default class Movie {
           return;
         }
         this._popupComponent.updateData(film, false);
+        if (this._popupComponent !== null) {
+          this._popupComponent.removeElement();
+        }
         render(this._bodyElement, this._popupComponent, renderPosition.BEFOREEND);
+        this._popupComponent.restoreHandlers();
+        break;
+      case UpdateType.MINOR:
+        if (document.querySelector('.film-details')) {
+          this._popupComponent.updateData(film, false);
+          return;
+        }
+        this._popupComponent.updateData(film, false);
+        if (this._popupComponent !== null) {
+          this._popupComponent.removeElement();
+        }
+        render(this._bodyElement, this._popupComponent, renderPosition.BEFOREEND);
+        this._popupComponent.restoreHandlers();
+        break;
     }
   }
 
-  _handleFavoriteClick() {
+
+  _handleFavoriteClick(scroll) {
     this._changeData(
       UserAction.UPDATE_FILM,
       this._filterType !== Pages.FAVORITES ? UpdateType.PATCH : UpdateType.MINOR,
@@ -91,12 +111,11 @@ export default class Movie {
             favorite: !this._film.userDetails.favorite,
           },
         },
-      ), this._comments, this._scrollPosition,
+      ), this._comments, scroll,
     );
-    this._bodyElement.scrollTop = this._scrollPosition;
   }
 
-  _handleWatchlistClick() {
+  _handleWatchlistClick(scroll) {
     this._changeData(
       UserAction.UPDATE_FILM,
       this._filterType !== Pages.WATCHLIST ? UpdateType.PATCH : UpdateType.MINOR,
@@ -109,12 +128,11 @@ export default class Movie {
             watchlist: !this._film.userDetails.watchlist,
           },
         },
-      ), this._comments, this._scrollPosition,
+      ), this._comments, scroll,
     );
-    this._bodyElement.scrollTop = this._scrollPosition;
   }
 
-  _handleHistoryClick() {
+  _handleHistoryClick(scroll) {
     this._changeData(
       UserAction.UPDATE_FILM,
       this._filterType !== Pages.HISTORY ? UpdateType.PATCH : UpdateType.MINOR,
@@ -127,15 +145,14 @@ export default class Movie {
             alreadyWatched: !this._film.userDetails.alreadyWatched,
           },
         },
-      ), this._comments, this._scrollPosition,
+      ), this._comments, scroll,
     );
-    this._bodyElement.scrollTop = this._scrollPosition;
   }
 
   _getCommentsFilm(film) {
     this._api.getComments(film.id)
       .then((comments) => {
-        this._commentsModel.setComments(UpdateType.PATCH, film, comments);
+        this._commentsModel.setComments(UpdateType.MINOR, film, comments);
       })
       .catch(() => {
         this._commentsModel.setComments(UpdateType.PATCH, film, []);
@@ -182,10 +199,6 @@ export default class Movie {
     this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._popupComponent.setAlreadyWatchedClickHandler(this._handleHistoryClick);
-  }
-
-  _saveScroll(scrollPosition) {
-    this._scrollPosition = scrollPosition;
   }
 
   destroy() {
