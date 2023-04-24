@@ -1,6 +1,9 @@
-import { formatRuntime, generateRuntime, getDayMonthFormat, getYearsFormat } from '../utils/utilts.js';
+import { formatRuntime, generateRuntime, getDayMonthFormat, getYearsFormat } from '../utils/utils.js';
 import SmartView from './smart.js';
+import { UserAction, UpdateType } from '../constants.js';
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
+import he from 'he';
 
 const createCommentTemplate = (comment) => (
   ` <li class="film-details__comment">
@@ -8,11 +11,11 @@ const createCommentTemplate = (comment) => (
             <img src=${comment.emoji} width="55" height="55" alt="emoji-smile">
           </span>
           <div>
-            <p class="film-details__comment-text">${comment.comment}</p>
+            <p class="film-details__comment-text">${he.encode(comment.comment)}</p>
             <p class="film-details__comment-info" >
               <span class="film-details__comment-author">${comment.author}</span>
               <span class="film-details__comment-day">${comment.date}</span>
-              <button class="film-details__comment-delete">Delete</button>
+              <button class="film-details__comment-delete" id=${comment.id}>Delete</button>
             </p>
           </div>
         </li>`
@@ -129,7 +132,7 @@ const createPopupTemplate = (data, newComment) => {
 };
 
 export default class Popup extends SmartView {
-  constructor(film, changeData, comments) {
+  constructor(film, changeData, comments, scroll, saveScroll) {
     super();
     this._comments = comments;
     this._newComment = {};
@@ -142,6 +145,12 @@ export default class Popup extends SmartView {
     this._textInputHandler = this._textInputHandler.bind(this);
     this._emojiHandler = this._emojiHandler.bind(this);
     this._sendCommentHandler = this._sendCommentHandler.bind(this);
+
+    this._scrollPosition = scroll;
+    this._saveScroll = saveScroll;
+    this._deleteCommentHandlers = this._deleteCommentHandlers.bind(this);
+    this._scrollHandler = this._scrollHandler.bind(this);
+
     this._setInnerHandlers();
   }
 
@@ -151,21 +160,31 @@ export default class Popup extends SmartView {
 
   _clickHandler(evt) {
     evt.preventDefault();
+    this._newComment = {};
+    this._addingNewComment(
+      Object.assign(
+        {},
+        this._newComment,
+        this._newComment,
+      ));
     this._callback.click();
   }
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
+    this._saveScroll(this._scrollPosition);
     this._callback.favoriteClick();
   }
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
+    this._saveScroll(this._scrollPosition);
     this._callback.watchlistClick();
   }
 
   _alreadyWatchedClickHandler(evt) {
     evt.preventDefault();
+    this._saveScroll(this._scrollPosition);
     this._callback.alreadyWatchedClick();
   }
 
@@ -202,6 +221,7 @@ export default class Popup extends SmartView {
 
   static parseDataToFilm(data) {
     data = Object.assign({}, data);
+
     if (!data.isComments) {
       data.comments = [];
     }
@@ -216,6 +236,10 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('.film-details__emoji-list').addEventListener('change', this._emojiHandler);
     this.getElement().querySelector('.film-details__comment-input').addEventListener('input', this._textInputHandler);
     document.addEventListener('keydown', this._sendCommentHandler);
+
+    const buttons = this.getElement().querySelectorAll('.film-details__comment-delete');
+    Array.from(buttons).forEach((button) => button.addEventListener('click', this._deleteCommentHandlers));
+    this.getElement().addEventListener('scroll', this._scrollHandler);
   }
 
   _textInputHandler(evt) {
@@ -236,11 +260,12 @@ export default class Popup extends SmartView {
           comment: evt.target.value,
         },
       ), true);
-    this.getElement().scrollTop = this._data.scrollPosition;
+    this.getElement().scrollTop = this._scrollPosition;
   }
 
   _emojiHandler(evt) {
     evt.preventDefault();
+
     this._data = Object.assign(
       {},
       this._data,
@@ -262,7 +287,6 @@ export default class Popup extends SmartView {
   _sendCommentHandler(evt) {
     if (evt.key === 'Enter') {
       evt.preventDefault();
-
       if (this._newComment.emoji && this._newComment.comment) {
         this._addingNewComment();
         this.updateData(
@@ -281,14 +305,13 @@ export default class Popup extends SmartView {
 
   _addingNewComment() {
     const dueDate = dayjs();
-    const el = `${getDayMonthFormat(dueDate)} ${formatRuntime(dueDate)}`;
     this._newComment = Object.assign(
       {},
       this._newComment,
       {
-        id: 3,
+        id: nanoid(),
         author: 'Iron Maaaan',
-        date: el,
+        date: `${getDayMonthFormat(dueDate)} ${formatRuntime(dueDate)}`,
       });
 
     const comments = this._data.comments;
@@ -302,7 +325,45 @@ export default class Popup extends SmartView {
       },
     );
     this._newComment = {};
-    this._changeData(this._data);
+    this._changeData(UserAction.ADD_COMMENT, UpdateType.PATCH, newcomment);
+  }
+
+  _deleteCommentHandlers(evt) {
+    evt.preventDefault();
+    const updatedComments = this._delete(this._data.comments, evt.target.id);
+    const index = this._data.comments.findIndex((comment) => comment.id === evt.target.id);
+    this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      this._data.comments[index],
+      this._data,
+      this._scrollPosition,
+    );
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH, Object.assign(
+        {},
+        this._data,
+        {
+          comments: updatedComments,
+        },
+      ), this._data.comments, this._scrollPosition);
+
+  }
+
+  _delete(comments, update) {
+    const index = comments.findIndex((comment) => comment.id === update);
+    const el = [
+      ...comments.slice(0, index),
+      ...comments.slice(index + 1),
+    ];
+    return el;
+  }
+
+
+  _scrollHandler(evt) {
+    evt.preventDefault();
+    this._scrollPosition = evt.target.offsetHeight;
   }
 
   restoreHandlers() {
