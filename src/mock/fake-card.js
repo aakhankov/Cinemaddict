@@ -131,10 +131,10 @@ export const generateComment = () => ({
   date: '2019-05-11T16:12:32.554Z',
   emoji: getRandomItem(EMOJI),
 });
-export const generateMovieCard = () => {
+export const generateMovieCard = (id) => {
   const comments = new Array(getRandomInt(1, 5)).fill().map(generateComment);
   return {
-    id: '0',
+    id: id,
     comments,
     movieInfo: {
       title: getRandomItem(MOVIE_TITLES),
