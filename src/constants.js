@@ -13,12 +13,13 @@ export const SortType = {
   RATING: 'rating',
 };
 
-export const COUNT = 15;
+export const COUNT = 40;
 
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const Pages = {

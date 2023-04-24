@@ -1,5 +1,5 @@
-import { formatRuntime, generateRuntime, getDayMonthFormat, getYearsFormat } from '../utils/utils.js';
-import SmartView from './smart.js';
+import { generateRuntime, getTimeFormat, getDayMonthFormat, getYearsFormat } from '../utils/utils.js';
+import Smart from './smart.js';
 import { UserAction, UpdateType } from '../constants.js';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
@@ -7,24 +7,26 @@ import he from 'he';
 
 const createCommentTemplate = (comment) => (
   ` <li class="film-details__comment">
-          <span class="film-details__comment-emoji">
-            <img src=${comment.emoji} width="55" height="55" alt="emoji-smile">
-          </span>
-          <div>
-            <p class="film-details__comment-text">${he.encode(comment.comment)}</p>
-            <p class="film-details__comment-info" >
-              <span class="film-details__comment-author">${comment.author}</span>
-              <span class="film-details__comment-day">${comment.date}</span>
-              <button class="film-details__comment-delete" id=${comment.id}>Delete</button>
-            </p>
-          </div>
-        </li>`
+      <span class="film-details__comment-emoji">
+        <img src="images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-smile">
+      </span>
+      <div>
+        <p class="film-details__comment-text">${he.encode(comment.comment)}</p>
+        <p class="film-details__comment-info" >
+          <span class="film-details__comment-author">${comment.author}</span>
+          <span class="film-details__comment-day">${getDayMonthFormat(comment.date)}</span>
+          <button class="film-details__comment-delete" id=${comment.id}>Delete</button>
+        </p>
+      </div>
+    </li>`
 );
+
 const createCommentsTemplate = (comments) => (
   `<ul class="film-details__comments-list" style="font-size:0" >
-  ${comments.map((comment) => createCommentTemplate(comment))}
+    ${comments.map((comment) => createCommentTemplate(comment))}
   </ul>`
 );
+
 const createEmojiTemplate = (generateComment) => (
   ` <img src=${generateComment.emoji} width="55" height="55" alt="emoji-smile">`
 );
@@ -108,6 +110,7 @@ const createPopupTemplate = (data, newComment) => {
             <tr class="film-details__row">
               <td class="film-details__term">${isGenres}</td>
               <td class="film-details__cell" style="font-size:0">
+              ${movieInfo.genre.map((genre) => `<span class="film-details__genre" style="font-size:21px">${genre}</span>`)}
               </td>
             </tr>
           </table>
@@ -123,31 +126,32 @@ const createPopupTemplate = (data, newComment) => {
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
       <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
-      ${comments ? createCommentsTemplate(comments) : ''}
-      ${createNewCommentTemplate(newComment)}
+        ${comments ? createCommentsTemplate(comments) : ''}
+        ${createNewCommentTemplate(newComment)}
       </section>
     </div>
   </form>
 </section>`;
 };
 
-export default class Popup extends SmartView {
-  constructor(film, changeData, comments, scroll, saveScroll) {
+export default class Popup extends Smart {
+  constructor(film, changeData, commentsModel, scroll, saveScroll) {
     super();
-    this._comments = comments;
+    this._commentsModel = commentsModel;
     this._newComment = {};
-    this._data = Popup.parseFilmToData(film);
     this._changeData = changeData;
+    this._data = Popup.parseFilmToData(film, []);
+    this._scrollPosition = scroll;
+    this._saveScroll = saveScroll;
+
+
     this._clickHandler = this._clickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._alreadyWatchedClickHandler = this._alreadyWatchedClickHandler.bind(this);
+    this._sendCommentHandler = this._sendCommentHandler.bind(this);
     this._textInputHandler = this._textInputHandler.bind(this);
     this._emojiHandler = this._emojiHandler.bind(this);
-    this._sendCommentHandler = this._sendCommentHandler.bind(this);
-
-    this._scrollPosition = scroll;
-    this._saveScroll = saveScroll;
     this._deleteCommentHandlers = this._deleteCommentHandlers.bind(this);
     this._scrollHandler = this._scrollHandler.bind(this);
 
@@ -155,7 +159,7 @@ export default class Popup extends SmartView {
   }
 
   getTemplate() {
-    return createPopupTemplate(this._data, this._newComment, this._comments);
+    return createPopupTemplate(this._data, this._newComment);
   }
 
   _clickHandler(evt) {
@@ -208,11 +212,12 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
   }
 
-  static parseFilmToData(film) {
+  static parseFilmToData(film, comments) {
     return Object.assign(
       {},
       film,
       {
+        comments: comments,
         scrollPosition: null,
         isComments: film.comments.length !== 0,
       },
@@ -221,7 +226,6 @@ export default class Popup extends SmartView {
 
   static parseDataToFilm(data) {
     data = Object.assign({}, data);
-
     if (!data.isComments) {
       data.comments = [];
     }
@@ -236,7 +240,6 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('.film-details__emoji-list').addEventListener('change', this._emojiHandler);
     this.getElement().querySelector('.film-details__comment-input').addEventListener('input', this._textInputHandler);
     document.addEventListener('keydown', this._sendCommentHandler);
-
     const buttons = this.getElement().querySelectorAll('.film-details__comment-delete');
     Array.from(buttons).forEach((button) => button.addEventListener('click', this._deleteCommentHandlers));
     this.getElement().addEventListener('scroll', this._scrollHandler);
@@ -265,7 +268,6 @@ export default class Popup extends SmartView {
 
   _emojiHandler(evt) {
     evt.preventDefault();
-
     this._data = Object.assign(
       {},
       this._data,
@@ -311,7 +313,7 @@ export default class Popup extends SmartView {
       {
         id: nanoid(),
         author: 'Iron Maaaan',
-        date: `${getDayMonthFormat(dueDate)} ${formatRuntime(dueDate)}`,
+        date: `${getDayMonthFormat(dueDate)} ${getTimeFormat(dueDate)}`,
       });
 
     const comments = this._data.comments;
@@ -348,7 +350,6 @@ export default class Popup extends SmartView {
           comments: updatedComments,
         },
       ), this._data.comments, this._scrollPosition);
-
   }
 
   _delete(comments, update) {
@@ -359,7 +360,6 @@ export default class Popup extends SmartView {
     ];
     return el;
   }
-
 
   _scrollHandler(evt) {
     evt.preventDefault();
