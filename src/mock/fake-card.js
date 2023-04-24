@@ -11,14 +11,16 @@ import {
   FILM_PRODUCTION_COUNTRY,
   MAX_LENGTH_DESCRIPTION,
   EMOJI
-} from './constants';
+} from '../constants';
 
 import {
   getRandomInt,
   getRandomFloat, getRandomItem,
   getRandomDescription, formatRuntime, generateDate
-} from './utilts.js';
+} from '../utils/utilts.js';
+
 import dayjs from 'dayjs';
+
 const createDescription = () => {
   const description = getRandomDescription(LOREM_IPSUM_DESCRIPTIONS).join('');
   if (description.length > MAX_LENGTH_DESCRIPTION) {
@@ -26,9 +28,7 @@ const createDescription = () => {
   }
   return description;
 };
-
 const getRandomBoolean = () => !!Math.round(Math.random());
-
 export const generateComment = () => ({
   id: '42',
   author: 'Audrey Hepburn',
@@ -36,12 +36,8 @@ export const generateComment = () => ({
   date: '2019-05-11T16:12:32.554Z',
   emoji: getRandomItem(EMOJI),
 });
-
-
 export const generateMovieCard = () => {
-
   const comments = new Array(getRandomInt(1, 5)).fill().map(generateComment);
-
   return {
     id: '0',
     comments,
